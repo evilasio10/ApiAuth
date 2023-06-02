@@ -8,7 +8,7 @@ namespace ApiAuth.Service
 {
     public static class TokenService
     {
-        public static string GerarToken(UserModel usuario)
+        public static string GerarToken(Usuario usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Settings.Secret);

@@ -2,6 +2,9 @@ using ApiAuth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using ApiAuth.Repositories;
+using ApiAuth.Service;
 
 var key = Encoding.ASCII.GetBytes(Settings.Secret);
 
@@ -26,11 +29,13 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+Settings.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 app.UseAuthentication();
@@ -43,6 +48,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+DatabaseManagementService.MigrationInitialisation(app);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

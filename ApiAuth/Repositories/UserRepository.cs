@@ -2,16 +2,29 @@
 
 namespace ApiAuth.Repositories
 {
-    public static class UserRepository
+    public class UserRepository
     {
-        public static UserModel Get(string usuario, string password)
+        AppDbContext _db = new AppDbContext();
+        public Usuario Get(string usuario, string password)
         {
-            var usuarios = new List<UserModel>
+            var data = _db.Usuario.Where(p => p.UserName == usuario && p.Password == password).FirstOrDefault();
+            return data;
+        }
+
+        public List<Usuario> GetList()
+        {
+            var data = _db.Usuario.ToList();
+            foreach (var item in data)
             {
-                new UserModel{Id=1, UserName="carlos", Password="bahia", Role="Adm" },
-                new UserModel{Id=2, UserName="joao", Password="vitoria", Role="atendimento" }
-            };
-            return usuarios.Where(p => p.UserName == usuario && p.Password == password).FirstOrDefault();
+                item.Password = string.Empty;
+            }
+            return data;
+        }
+        public Usuario Add(Usuario usuario)
+        {
+            _db.Usuario.Add(usuario);
+            _db.SaveChanges();            
+            return usuario;
         }
     }
 }
